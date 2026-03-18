@@ -57,6 +57,7 @@ happy connect gemini
 - `happy gemini` – Start Gemini CLI session
 - `happy codex` – Start Codex mode
 - `happy acp` – Start a generic ACP-compatible agent
+- `happy cursor` – Start Cursor Agent session (fork feature)
 
 ### Utility Commands
 
@@ -96,6 +97,21 @@ happy acp opencode                   # Run built-in OpenCode ACP command
 happy acp opencode --verbose         # Include raw backend/envelope logs
 happy acp -- custom-agent --flag     # Run any ACP-compatible command directly
 ```
+
+### Cursor Subcommands
+
+```bash
+happy cursor                         # Start Cursor Agent session
+                                     # (waits for prompt from mobile app)
+```
+
+Cursor Agent sessions are monitored remotely — send prompts from the mobile app and watch Cursor work in real-time. Multi-turn conversations use `--resume` internally.
+
+**Requirements:**
+- Cursor installed with Pro or Business subscription
+- `HAPPY_SERVER_URL=https://api.happy-servers.com` must be set
+
+**Full documentation:** [docs/cursor-agent.md](../../docs/cursor-agent.md)
 
 ### Sandbox Subcommands
 
@@ -181,6 +197,12 @@ Interested in contributing? See [CONTRIBUTING.md](CONTRIBUTING.md) for developme
 
 - Gemini CLI installed (`npm install -g @google/gemini-cli`)
 - Google account authenticated via `happy connect gemini`
+
+### For Cursor
+
+- [Cursor](https://cursor.com/) installed with Pro or Business subscription
+- `cursor agent --version` works in terminal
+- `HAPPY_SERVER_URL=https://api.happy-servers.com` set in environment
 
 ## License
 

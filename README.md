@@ -68,6 +68,11 @@ happy
 
 happy codex
 
+# Cursor Agent (fork feature)
+# Monitor Cursor Agent sessions from your phone
+
+happy cursor
+
 ```
 
 <div align="center"><img src="/.github/mascot.png" width="200" title="Happy Coder" alt="Happy Coder"/></div>
