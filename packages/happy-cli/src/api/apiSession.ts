@@ -376,6 +376,33 @@ export class ApiSessionClient extends EventEmitter {
         }
     }
 
+    /**
+     * Send a RawJSONLines message in 0.13.0-compatible wire format.
+     * Bypasses session protocol mapper — sends raw log data directly via socket.emit.
+     * Use this when the mobile app does not yet support SessionEnvelope format.
+     */
+    sendLegacyLogMessage(body: RawJSONLines) {
+        let content;
+        if (body.type === 'user' && typeof body.message?.content === 'string' && !(body as any).isSidechain && !(body as any).isMeta) {
+            content = {
+                role: 'user' as const,
+                content: { type: 'text', text: body.message.content },
+                meta: { sentFrom: 'cli' }
+            };
+        } else {
+            content = {
+                role: 'agent' as const,
+                content: { type: 'output', data: body },
+                meta: { sentFrom: 'cli' }
+            };
+        }
+        const encrypted = encodeBase64(encrypt(this.encryptionKey, this.encryptionVariant, content));
+        this.socket.emit('message', {
+            sid: this.sessionId,
+            message: encrypted
+        });
+    }
+
     closeClaudeSessionTurn(status: SessionTurnEndStatus = 'completed') {
         const mapped = closeClaudeTurnWithStatus(this.claudeSessionProtocolState, status);
         this.claudeSessionProtocolState.currentTurnId = mapped.currentTurnId;
