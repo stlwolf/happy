@@ -52,3 +52,10 @@ CLAUDE.local.md
 notes/
 # ralphex progress logs
 progress*.txt
+
+# Cursor / Agent artifacts
+.cursorindexingignore
+.specstory/
+.thread-exports/
+tmp/
+happy-coder-*.tgz

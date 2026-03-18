@@ -124,6 +124,26 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       process.exit(1)
     }
     return;
+  } else if (subcommand === 'cursor') {
+    try {
+      const { runCursor } = await import('@/cursor/runCursor');
+      let startedBy: 'daemon' | 'terminal' | undefined = undefined;
+      const cursorArgs = extractNoSandboxFlag(args.slice(1));
+      for (let i = 0; i < cursorArgs.args.length; i++) {
+        if (cursorArgs.args[i] === '--started-by') {
+          startedBy = cursorArgs.args[++i] as 'daemon' | 'terminal';
+        }
+      }
+      const { credentials } = await authAndSetupMachineIfNeeded();
+      await runCursor({ credentials, startedBy, noSandbox: cursorArgs.noSandbox });
+    } catch (error) {
+      console.error(chalk.red('Error:'), error instanceof Error ? error.message : 'Unknown error')
+      if (process.env.DEBUG) {
+        console.error(error)
+      }
+      process.exit(1)
+    }
+    return;
   } else if (subcommand === 'gemini') {
     // Handle gemini subcommands
     const geminiSubcommand = args[1];
