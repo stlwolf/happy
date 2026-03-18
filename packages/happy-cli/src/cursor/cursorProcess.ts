@@ -15,7 +15,6 @@ export interface CursorProcessOptions {
   cwd: string;
   model?: string;
   resume?: string;
-  force?: boolean;
   approveMcps?: boolean;
 }
 
@@ -110,8 +109,21 @@ export function spawnCursorAgent(opts: CursorProcessOptions): CursorProcessResul
 
   let sessionIdResolved = false;
 
+  child.on('error', (err) => {
+    if (!sessionIdResolved) {
+      sessionIdResolved = true;
+      sessionIdReject(err);
+    }
+  });
+
   async function* parseMessages(): AsyncGenerator<Record<string, unknown>> {
-    if (!child.stdout) return;
+    if (!child.stdout) {
+      if (!sessionIdResolved) {
+        sessionIdResolved = true;
+        sessionIdReject(new Error('Cursor process has no stdout'));
+      }
+      return;
+    }
 
     const rl = createInterface({ input: child.stdout });
 
@@ -132,6 +144,7 @@ export function spawnCursorAgent(opts: CursorProcessOptions): CursorProcessResul
     }
 
     if (!sessionIdResolved) {
+      sessionIdResolved = true;
       sessionIdReject(new Error('Cursor process exited without producing a session_id'));
     }
   }

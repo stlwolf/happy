@@ -49,7 +49,7 @@ export async function runCursor(opts: RunCursorOptions): Promise<void> {
     flavor: 'claude',
     machineId: settings.machineId,
     startedBy: opts.startedBy,
-    sandbox: settings.sandboxConfig,
+    sandbox: opts.noSandbox ? undefined : settings.sandboxConfig,
   });
   const response = await api.getOrCreateSession({ tag: sessionTag, metadata, state });
 
