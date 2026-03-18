@@ -62,11 +62,14 @@ function formatToolResult(toolCall: Record<string, unknown>): string {
   return JSON.stringify(inner);
 }
 
+const CURSOR_MODEL = 'cursor-agent';
+
 function emitThinking(buffer: string): SDKMessage {
   return {
     type: 'assistant',
     message: {
       role: 'assistant',
+      model: CURSOR_MODEL,
       content: [{ type: 'thinking', thinking: buffer }],
     },
   };
@@ -101,6 +104,7 @@ export function createCursorNormalizer(): CursorNormalizer {
             type: 'assistant',
             message: {
               role: 'assistant',
+              model: CURSOR_MODEL,
               content: [{
                 type: 'tool_use',
                 id: msg.call_id as string,
@@ -129,8 +133,16 @@ export function createCursorNormalizer(): CursorNormalizer {
       case 'result':
         return [];
 
-      default:
-        return [msg as SDKMessage];
+      default: {
+        const sdkMsg = msg as SDKMessage;
+        if (sdkMsg.type === 'assistant') {
+          const message = sdkMsg.message as Record<string, unknown> | undefined;
+          if (message && !message.model) {
+            message.model = CURSOR_MODEL;
+          }
+        }
+        return [sdkMsg];
+      }
     }
   }
 

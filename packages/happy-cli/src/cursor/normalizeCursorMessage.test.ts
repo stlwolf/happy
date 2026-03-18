@@ -77,6 +77,7 @@ describe('createCursorNormalizer', () => {
         type: 'assistant',
         message: {
           role: 'assistant',
+          model: 'cursor-agent',
           content: [{ type: 'thinking', thinking: 'The user wants help.' }],
         },
       });
@@ -197,6 +198,7 @@ describe('createCursorNormalizer', () => {
         type: 'assistant',
         message: {
           role: 'assistant',
+          model: 'cursor-agent',
           content: [{ type: 'thinking', thinking: 'thinking about stuff' }],
         },
       });
